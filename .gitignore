@@ -1,0 +1,33 @@
+# Dependencias y artefactos generados
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/web-build/
+**/.expo/
+**/.cache/
+**/coverage/
+
+# Configuracion local y secretos
+**/.env
+**/.env.*
+!**/.env.example
+**/*.local
+
+# Historial Git anterior de la aplicacion movil (respaldo local)
+HotelApp/.git.mobile-history-backup/
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+**/.idea/
+**/.vscode/*
+!**/.vscode/extensions.json
+*.log
+*.tsbuildinfo
+
+# Carpetas ajenas a la entrega del proyecto integrador
+/practicas/
+/todoloquenecesito/
+/.agents/
+/.claude/
+
