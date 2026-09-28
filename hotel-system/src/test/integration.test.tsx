@@ -8,7 +8,7 @@ vi.mock('../context/AuthContext', () => ({
     perfil: {
       nombre_completo: 'Admin Hotel',
       correo: 'admin@hotel.com',
-      rol: 'administrador',
+      rol: 'Administrador',
       usuario_id: 'uuid-admin-001',
     },
     cerrarSesion: vi.fn(),
@@ -21,6 +21,7 @@ vi.mock('../services/api', () => ({
   confirmarReserva: vi.fn(),
   cancelarReserva: vi.fn(),
   getHabitaciones: vi.fn(),
+  getPortadasHabitaciones: vi.fn(),
   actualizarEstadoHabitacion: vi.fn(),
   getTiposHabitacion: vi.fn(),
   crearHabitacion: vi.fn(),
@@ -30,7 +31,9 @@ vi.mock('../services/api', () => ({
   actualizarHousekeeping: vi.fn(),
   crearTareaHousekeeping: vi.fn(),
   getPersonalActual: vi.fn(),
-  getPagos: vi.fn(),
+  getResumenPagos: vi.fn(),
+  getReservasConPagos: vi.fn(),
+  getHistorialPagos: vi.fn(),
   getMetodosPago: vi.fn(),
   registrarPago: vi.fn(),
   getReservasConSaldo: vi.fn(),
@@ -42,6 +45,10 @@ vi.mock('../services/api', () => ({
   getMisNotificaciones: vi.fn(),
   marcarNotificacionLeida: vi.fn(),
   getResumenAdmin: vi.fn(),
+}))
+
+vi.mock('../repositories/rpcRepository', () => ({
+  executeRpc: vi.fn(),
 }))
 
 vi.mock('../services/supabase', () => ({
@@ -68,6 +75,7 @@ vi.mock('react-router-dom', async () => {
 })
 
 import * as api from '../services/api'
+import { executeRpc } from '../repositories/rpcRepository'
 import Login from '../pages/auth/Login'
 import Reservas from '../pages/personal/Reservas'
 import Habitaciones from '../pages/personal/Habitaciones'
@@ -145,31 +153,43 @@ const habitacionesMock = [
 const tareasMock = [
   {
     id: 'uuid-task-001',
+    codigo: 'HK-001',
+    habitacion_id: 'uuid-hab-002',
     habitacion_numero: '201',
     tipo_habitacion: 'Suite',
     piso: 2,
+    hab_estado: 'limpieza',
     estado: 'pendiente',
     prioridad: 'alta',
+    personal_id: 'uuid-personal-001',
     personal_nombre: 'Ana García',
-    fecha_asignacion: '2026-06-01T10:00:00',
-    fecha_inicio: null,
-    fecha_fin: null,
+    personal_cargo: 'Housekeeping',
+    fecha_programada: '2026-06-01',
+    hora_inicio: null,
+    hora_fin: null,
     observaciones: 'Limpieza post checkout',
+    obs_inspector: null,
+    checklist_total: 4,
+    checklist_ok: 1,
+    created_at: '2026-06-01T10:00:00',
   },
 ]
 
-const pagosMock = [
+const reservasPagoMock = [
   {
-    pago_id: 'uuid-pago-001',
-    reserva_codigo: 'RES-ABC12345',
+    reserva_id: 'uuid-res-001',
+    codigo_reserva: 'RES-ABC12345',
     cliente_nombre: 'Juan Pérez',
-    monto: 300,
-    tipo_pago: 'parcial',
-    estado: 'aprobado',
-    metodo_nombre: 'Efectivo',
-    fecha_pago: '2026-06-01T09:00:00',
-    total_reserva: 600,
+    fecha_entrada: '2026-06-10',
+    fecha_salida: '2026-06-13',
+    estado_reserva: 'confirmada',
+    total_estimado: 600,
+    habitacion_numero: '101',
+    tipo_habitacion: 'Individual',
+    total_pagado: 300,
     saldo_pendiente: 300,
+    ultimo_pago: '2026-06-01T09:00:00',
+    estado_pago: 'parcial',
   },
 ]
 
@@ -178,7 +198,7 @@ const pagosMock = [
 describe('Login — pruebas de integración', () => {
   it('PI01 — renderiza campos de correo, contraseña y botón de sesión', () => {
     render(<MemoryRouter><Login /></MemoryRouter>)
-    expect(screen.getByPlaceholderText('correo@ejemplo.com')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('empleado@hotel.com')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /iniciar sesión/i })).toBeInTheDocument()
   })
@@ -190,7 +210,7 @@ describe('Login — pruebas de integración', () => {
 
   it('PI03 — al escribir en el campo correo se actualiza el valor', () => {
     render(<MemoryRouter><Login /></MemoryRouter>)
-    const input = screen.getByPlaceholderText('correo@ejemplo.com')
+    const input = screen.getByPlaceholderText('empleado@hotel.com')
     fireEvent.change(input, { target: { value: 'admin@hotel.com' } })
     expect(input).toHaveValue('admin@hotel.com')
   })
@@ -267,6 +287,7 @@ describe('Habitaciones — pruebas de integración', () => {
   beforeEach(() => {
     vi.mocked(api.getHabitaciones).mockResolvedValue(habitacionesMock as never)
     vi.mocked(api.getTiposHabitacion).mockResolvedValue([] as never)
+    vi.mocked(api.getPortadasHabitaciones).mockResolvedValue([] as never)
   })
 
   it('PI09 — renderiza tarjetas con número de habitación', async () => {
@@ -291,15 +312,23 @@ describe('Habitaciones — pruebas de integración', () => {
 // ════════════════════════════════════════════════════
 describe('Housekeeping — pruebas de integración', () => {
   beforeEach(() => {
-    vi.mocked(api.getTareasHousekeeping).mockResolvedValue(tareasMock as never)
     vi.mocked(api.getHabitaciones).mockResolvedValue(habitacionesMock as never)
-    vi.mocked(api.getPersonalActual).mockResolvedValue([] as never)
+    vi.mocked(executeRpc).mockImplementation(async (fn) => {
+      if (fn === 'rpc_get_tareas_housekeeping') return tareasMock
+      if (fn === 'rpc_get_resumen_housekeeping') return [{
+        total_habitaciones: 2, disponibles: 1, ocupadas: 0,
+        limpieza: 1, mantenimiento: 0, pendientes: 1,
+        en_progreso: 0, completadas: 0, aprobadas_hoy: 0,
+        rechazadas: 0, retrasadas: 0,
+      }]
+      return []
+    })
   })
 
   it('PI11 — renderiza la lista de tareas de housekeeping', async () => {
     render(<MemoryRouter><Housekeeping /></MemoryRouter>)
     await waitFor(() => {
-      expect(screen.getByText('201')).toBeInTheDocument()
+      expect(screen.getByText('Hab. 201')).toBeInTheDocument()
     })
   })
 
@@ -325,24 +354,30 @@ describe('Housekeeping — pruebas de integración', () => {
 // ════════════════════════════════════════════════════
 describe('Pagos — pruebas de integración', () => {
   beforeEach(() => {
-    vi.mocked(api.getPagos).mockResolvedValue(pagosMock as never)
-    vi.mocked(api.getMetodosPago).mockResolvedValue([] as never)
-    vi.mocked(api.getReservasConSaldo).mockResolvedValue([] as never)
+    vi.mocked(api.getResumenPagos).mockResolvedValue({
+      hoy_total: 300, mes_total: 300, pagos_hoy: 1, pendientes: 1,
+    } as never)
+    vi.mocked(api.getReservasConPagos).mockResolvedValue(reservasPagoMock as never)
+    vi.mocked(api.getMetodosPago).mockResolvedValue([
+      { id: 'uuid-metodo-001', nombre: 'Efectivo' },
+    ] as never)
+    vi.mocked(api.getHistorialPagos).mockResolvedValue([] as never)
   })
 
 it('PI14 — renderiza la lista de pagos con datos del mock', async () => {
     render(<MemoryRouter><Pagos /></MemoryRouter>)
     await waitFor(() => {
-      expect(
-        screen.getByText((content) => content.includes('300'))
-      ).toBeInTheDocument()
+      expect(screen.getByText('RES-ABC12345')).toBeInTheDocument()
+      expect(screen.getAllByText('Bs. 300').length).toBeGreaterThanOrEqual(2)
     })
   })
 
   it('PI15 — el botón Registrar Pago está presente', async () => {
     render(<MemoryRouter><Pagos /></MemoryRouter>)
+    await waitFor(() => expect(screen.getByText('RES-ABC12345')).toBeInTheDocument())
+    fireEvent.click(screen.getByText('RES-ABC12345'))
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /registrar pago/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /registrar bs/i })).toBeInTheDocument()
     })
   })
 })
