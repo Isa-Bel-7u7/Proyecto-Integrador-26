@@ -6,11 +6,14 @@
 **/.expo/
 **/.cache/
 **/coverage/
+**/test-results/
+**/playwright-report/
 
 # Configuracion local y secretos
 **/.env
 **/.env.*
 !**/.env.example
+!**/.env.*.example
 **/*.local
 
 # Historial Git anterior de la aplicacion movil (respaldo local)
