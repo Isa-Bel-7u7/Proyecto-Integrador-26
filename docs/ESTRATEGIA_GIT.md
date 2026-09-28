@@ -1,40 +1,38 @@
-# Estrategia de ramificacion y colaboracion
+# Estrategia de ramificación
 
 ## Contexto
 
-El proyecto fue desarrollado individualmente por **Isa-Bel-7u7** durante cinco meses. Aunque existe una sola programadora, el flujo simula una practica profesional: ninguna funcionalidad se integra directamente sin una rama identificable y un pull request revisable.
+El proyecto fue desarrollado individualmente por **Isa-Bel-7u7** durante cinco meses. Se utilizaron ramas para separar los cambios de la aplicación web, la aplicación móvil y la documentación antes de integrarlos en la versión principal.
 
 ## Modelo elegido
 
-Se utiliza una variante liviana de **GitHub Flow**:
+Se utilizó una variante sencilla de **GitHub Flow**:
 
-1. `main` conserva el incremento estable e integrable.
-2. Cada bloque de trabajo nace desde `main` en una rama corta.
-3. El nombre de la rama incluye la clave de Jira: `tipo/HOTEL-n-descripcion`.
-4. Los commits siguen Conventional Commits y quedan firmados con la identidad Git de Isa-Bel-7u7.
-5. La rama se publica y se integra mediante pull request.
-6. Tras validar el incremento, la historia correspondiente se marca como lista en Jira.
+1. `main` contiene la versión integrada del proyecto.
+2. Cada incremento se prepara en una rama independiente.
+3. El nombre de la rama identifica el tipo de cambio y su referencia de Jira.
+4. Los commits siguen la convención Conventional Commits.
+5. Los cambios se revisan e integran mediante un pull request.
 
-Este modelo es adecuado para una desarrolladora porque mantiene trazabilidad sin introducir la sobrecarga de Git Flow. Tambien permite demostrar como escalar el mismo proceso si luego se incorporan mas integrantes.
+Este flujo permite comprobar qué cambios pertenecen a cada incremento y evita trabajar directamente sobre `main`.
 
 ## Tipos de rama
 
 | Prefijo | Uso | Ejemplo |
 |---|---|---|
 | `feat/` | Funcionalidad o incremento | `feat/HOTEL-1-web-hotel-system` |
-| `fix/` | Correccion de un defecto | `fix/HOTEL-19-pruebas-integracion` |
-| `docs/` | Documentacion y evidencias | `docs/HOTEL-3-gestion-proyecto` |
-| `chore/` | Configuracion o mantenimiento | `chore/HOTEL-20-entrega` |
+| `fix/` | Corrección de un defecto | `fix/HOTEL-28-pruebas-integracion` |
+| `docs/` | Documentación | `docs/HOTEL-12-clean-repository` |
 
-## Politica de pull requests
+## Política de pull requests
 
-Cada pull request debe incluir objetivo, historia de Jira, cambios principales, evidencia de verificacion y riesgos pendientes. En este proyecto individual, la autora realiza una auto-revision explicita antes de fusionar. El PR no pretende fingir una segunda revisora: sirve como registro auditable del incremento y como punto de control antes de llegar a `main`.
+Cada pull request indica su objetivo, la historia de Jira relacionada, los cambios principales y las verificaciones realizadas. Al tratarse de un proyecto individual, la misma autora revisa los cambios antes de fusionarlos con `main`.
 
-## Decision sobre fork
+## Decisión sobre fork
 
-No se usa `fork` porque la unica desarrolladora es propietaria del repositorio y tiene permisos directos. Un fork duplicaria el repositorio sin aportar aislamiento adicional. Las ramas ya separan el trabajo y los pull requests mantienen el control de integracion. Un fork si seria recomendable para colaboradores externos sin acceso de escritura o para contribuciones abiertas.
+No se utilizó `fork` porque la desarrolladora es propietaria del repositorio y tiene acceso de escritura. Las ramas ya proporcionan la separación necesaria. Un fork sería apropiado para colaboradores externos sin acceso directo al repositorio.
 
-## Relacion con Jira y sprint
+## Relación con Jira
 
-Las ramas y los PR incluyen claves `HOTEL-n`, lo que permite relacionarlos con sus actividades de Jira. El sprint final muestra el incremento integrado: aplicacion web, aplicacion movil y documentacion de gestion. Los elementos comprobados se cierran como `Listo`; los defectos de integracion o evidencias aun pendientes permanecen visibles en lugar de marcarse falsamente como terminados.
+Las ramas y los pull requests se relacionan con las historias `HOTEL-10`, `HOTEL-11` y `HOTEL-12`. Los nombres originales de las primeras ramas se conservaron porque fueron creadas antes de la importación definitiva del backlog en Jira; la relación final quedó registrada en los pull requests correspondientes.
 
