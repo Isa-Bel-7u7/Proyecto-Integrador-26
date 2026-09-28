@@ -1,7 +1,30 @@
 import { test, expect, type Page } from '@playwright/test'
+import { env } from 'node:process'
 
-const ADMIN = { correo: 'admin@hotel.com', password: 'Admin123!' }
-const CLIENTE = { correo: 'cliente@correo.com', password: 'Cliente123!' }
+const ADMIN = {
+  correo: env.E2E_ADMIN_EMAIL ?? '',
+  password: env.E2E_ADMIN_PASSWORD ?? '',
+}
+const CLIENTE = {
+  correo: env.E2E_CLIENT_EMAIL ?? '',
+  password: env.E2E_CLIENT_PASSWORD ?? '',
+}
+
+test.beforeAll(() => {
+  const missingCredentials = Object.entries({ ADMIN, CLIENTE })
+    .flatMap(([role, credentials]) =>
+      Object.entries(credentials)
+        .filter(([, value]) => !value)
+        .map(([field]) => `${role}.${field}`),
+    )
+
+  if (missingCredentials.length > 0) {
+    throw new Error(
+      `Faltan credenciales E2E: ${missingCredentials.join(', ')}. ` +
+        'Configura las variables documentadas en .env.e2e.example.',
+    )
+  }
+})
 
 async function login(page: Page, correo: string, password: string) {
   await page.goto('/login')
