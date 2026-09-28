@@ -11,6 +11,20 @@ El sistema contempla experiencias diferenciadas para cliente, administrador, rec
 
 La aplicación móvil añade búsqueda y reserva de habitaciones, pagos, pre check-in, favoritos, solicitudes de servicio, avisos, buzón y perfiles específicos para cliente, housekeeping, personal y administración.
 
+### Estado final de la entrega (28 de septiembre de 2026)
+
+El backlog se importó en el proyecto JIRA `HOTEL` con **9 épicas y 20 historias**. Como JIRA creó primero las épicas, las claves definitivas de las historias de integración son distintas de los identificadores usados durante la planificación inicial:
+
+| Evidencia | Clave JIRA definitiva | Rama preservada | Pull request |
+|---|---|---|---|
+| Incremento web | `HOTEL-10` | `feat/HOTEL-1-web-hotel-system` | [PR #1](https://github.com/Isa-Bel-7u7/Proyecto-Integrador-26/pull/1) |
+| Incremento móvil | `HOTEL-11` | `feat/HOTEL-2-mobile-hotel-app` | [PR #2](https://github.com/Isa-Bel-7u7/Proyecto-Integrador-26/pull/2) |
+| Estrategia y backlog | `HOTEL-12` | `docs/HOTEL-3-project-management` | [PR #3](https://github.com/Isa-Bel-7u7/Proyecto-Integrador-26/pull/3) |
+
+Las ramas conservan sus nombres originales como evidencia de que se crearon antes de que JIRA asignara las claves definitivas. La relación correcta quedó registrada tanto en las historias como en los títulos y comentarios de los pull requests.
+
+El **Sprint 5 - Entrega final** está activo del 28 de septiembre al 2 de octubre de 2026. Incluye `HOTEL-10`, `HOTEL-11`, `HOTEL-12` y `HOTEL-29` en estado `Listo`, y `HOTEL-28` en estado `En curso`. La historia de pruebas no se cerró artificialmente porque aún representa deuda técnica real.
+
 ## 2. Diagnóstico real del repositorio
 
 ### 2.1 Evidencia técnica encontrada
@@ -614,4 +628,4 @@ Un fork sería apropiado si el repositorio perteneciera a otra organización, si
 
 ## 13. Observación final de integridad académica
 
-Las historias anteriores representan funcionalidades reales identificadas en el código y en la matriz de requerimientos. Sin embargo, las ramas y pull requests todavía deben crearse en un repositorio remoto. No se deben presentar ramas ficticias ni convertir los dos commits existentes en evidencia de veinte historias distintas. La mejor defensa del trabajo realizado es mostrar el alcance real y aplicar desde ahora un proceso de cierre verificable.
+Las historias representan funcionalidades reales identificadas en el código y en la matriz de requerimientos. Las tres ramas de entrega y sus pull requests existen en el repositorio remoto y fueron integrados a `main`. La historia `HOTEL-28` permanece en curso para no presentar como finalizadas las pruebas de integración que todavía requieren estabilización; el resto del incremento del sprint se encuentra en `Listo` y conserva evidencia verificable en JIRA y GitHub.
