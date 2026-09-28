@@ -6,6 +6,8 @@
 **/.expo/
 **/.cache/
 **/coverage/
+**/test-results/
+**/playwright-report/
 
 # Configuracion local y secretos
 **/.env
