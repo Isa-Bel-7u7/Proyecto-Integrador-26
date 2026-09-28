@@ -1,17 +1,19 @@
-# Sistema Integral de Gestion Hotelera
+# Sistema Integral de Gestión Hotelera
 
-Proyecto integrador desarrollado por **Isa-Bel-7u7** para centralizar la operacion de un hotel desde dos clientes conectados a Supabase.
+Proyecto integrador desarrollado por **Isa-Bel-7u7** para centralizar la operación de un hotel mediante una aplicación web y una aplicación móvil conectadas a Supabase.
 
 ## Aplicaciones
 
-- `hotel-system/`: aplicacion web construida con React, TypeScript y Vite.
-- `HotelApp/`: aplicacion movil construida con React Native, Expo y TypeScript.
+- `hotel-system/`: aplicación web construida con React, TypeScript y Vite.
+- `HotelApp/`: aplicación móvil construida con React Native, Expo y TypeScript.
 
-El sistema contempla autenticacion por roles, gestion de habitaciones y reservas, check-in/check-out, pagos, housekeeping, incidencias, comunicaciones, reportes y administracion.
+El sistema contempla autenticación por roles, gestión de habitaciones y reservas, check-in y check-out, pagos, housekeeping, incidencias, comunicaciones, reportes y administración.
 
-## Ejecucion local
+## Ejecución local
 
-Cada aplicacion administra sus dependencias por separado:
+Cada aplicación administra sus dependencias por separado.
+
+### Aplicación web
 
 ```bash
 cd hotel-system
@@ -19,19 +21,21 @@ npm install
 npm run dev
 ```
 
+### Aplicación móvil
+
 ```bash
 cd HotelApp
 npm install
 npm start
 ```
 
-Las credenciales de Supabase se mantienen en archivos `.env` locales y no se publican en GitHub.
+Las credenciales de Supabase se mantienen en archivos `.env` locales y no se publican en GitHub. Cada aplicación debe configurarse con sus propias variables de entorno antes de ejecutarse.
 
-## Gestion del proyecto
+## Gestión del proyecto
 
-- Jira: espacio Scrum `HOTEL` — Sistema Integral de Gestion Hotelera.
-- Estrategia Git: ramas cortas asociadas a historias de Jira y fusion mediante pull request.
-- Convencion de commits: Conventional Commits (`feat`, `fix`, `docs`, `test`, `chore`).
+- Jira: proyecto Scrum `HOTEL` — Sistema Integral de Gestión Hotelera.
+- Estrategia Git: ramas asociadas a historias de Jira e integración mediante pull request.
+- Convención de commits: Conventional Commits (`feat`, `fix`, `docs`, `test`, `chore`).
 
-La justificacion completa de ramas, pull requests y uso de fork se encuentra en [`docs/ESTRATEGIA_GIT.md`](docs/ESTRATEGIA_GIT.md).
+La justificación de la estrategia de ramas y del uso de pull requests se encuentra en [`docs/ESTRATEGIA_GIT.md`](docs/ESTRATEGIA_GIT.md).
 
