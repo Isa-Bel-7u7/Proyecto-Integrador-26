@@ -31,6 +31,10 @@ npm start
 
 Las credenciales de Supabase se mantienen en archivos `.env` locales y no se publican en GitHub. Cada aplicación debe configurarse con sus propias variables de entorno antes de ejecutarse.
 
+## Despliegue Docker y OCI
+
+La aplicación web puede construirse como contenedor y publicarse en Docker Hub con GitHub Actions. Consulta la [guía de despliegue Docker y OCI](GUIA_DESPLIEGUE_DOCKER_OCI.md) para configurar los secretos, ejecutar la imagen y desplegarla en una VM.
+
 ## Gestión del proyecto
 
 - Jira: proyecto Scrum `HOTEL` — Sistema Integral de Gestión Hotelera.
